@@ -1,7 +1,7 @@
 class NoteItem {
-  final int id;
-  final String title;
-  final String content;
+  int id;
+  String title;
+  String content;
 
   NoteItem({this.id, this.title, this.content});
 

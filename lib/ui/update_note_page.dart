@@ -2,17 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
 import 'package:flutter_app/utils/data-access.dart';
 
-class AddNotePage extends StatefulWidget {
+class UpdateNotePage extends StatefulWidget {
+  final int noteId;
+
+  UpdateNotePage({this.noteId});
+
   @override
-  AddNotePageState createState() {
-    return AddNotePageState();
+  UpdateNotePageState createState() {
+    return UpdateNotePageState(noteId: this.noteId);
   }
 }
 
-class AddNotePageState extends State<AddNotePage> {
+class UpdateNotePageState extends State<UpdateNotePage> {
   final _formKey = GlobalKey<FormState>();
   final _titleInputController = TextEditingController();
   final _contentInputController = TextEditingController();
+
+  NoteItem _note;
+
+  final int noteId;
+
+  UpdateNotePageState({this.noteId});
+
+  @override
+  void initState() {
+    super.initState();
+
+    DataAccess.getSingle(noteId).then((value) => {
+          setState(() {
+            _note = value;
+          })
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +42,11 @@ class AddNotePageState extends State<AddNotePage> {
         if (_contentInputController.text.isEmpty ||
             _formKey.currentState.validate()) {
           var note = NoteItem(
+              id: noteId,
               title: _titleInputController.text,
               content: _contentInputController.text);
 
-          var id = await DataAccess.addNote(note);
-          note.id = id;
+          await DataAccess.addNote(note);
 
           Navigator.pop(context, note);
         }
@@ -34,7 +55,10 @@ class AddNotePageState extends State<AddNotePage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Add New Note'),
+          title: Text('Update Note'),
+          actions: [
+            IconButton(icon: Icon(Icons.delete), onPressed: () {}),
+          ],
         ),
         body: Container(
           margin: EdgeInsets.all(10),
@@ -51,6 +75,11 @@ class AddNotePageState extends State<AddNotePage> {
   }
 
   Widget _buildForm() {
+    if (_note != null) {
+      _titleInputController.text = _note.title;
+      _contentInputController.text = _note.content;
+    }
+
     return Form(
         key: _formKey,
         child: Padding(

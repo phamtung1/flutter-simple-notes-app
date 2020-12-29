@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
+import 'package:flutter_app/ui/update_note_page.dart';
 import 'package:flutter_app/utils/data-access.dart';
+import 'package:flutter_app/utils/string-utils.dart';
 import 'add_note_page.dart';
 
 class NoteListPage extends StatefulWidget {
@@ -30,9 +34,32 @@ class _NoteListPageState extends State<NoteListPage> {
               body: snapshot.data,
             );
           } else {
-            return CircularProgressIndicator();
+            return Scaffold(
+                appBar: AppBar(
+                  title: Text('Simple Notes App'),
+                ),
+                body: _buildLoadingScreen(context)
+            );
           }
         }
+    );
+  }
+
+  Widget _buildLoadingScreen(BuildContext context){
+    return Center(
+        child: SizedBox(
+          width: 100,
+          height: 100,
+          child: new Column(
+            children: [
+              CircularProgressIndicator(
+                value: 0.5,
+                backgroundColor: Colors.grey,
+              ),
+              Container(margin: EdgeInsets.only(top: 15),child:Text("Loading" )),
+            ],
+          ),
+        )
     );
   }
 
@@ -43,13 +70,13 @@ class _NoteListPageState extends State<NoteListPage> {
     );
 
     if(result != null && result.title.isNotEmpty) {
-      _addItemToList(result);
+      _addNote(result);
     }
   }
 
   Future<Widget> _buildNoteList() async{
     if(_allNotes.isEmpty) {
-      var data = await DataAccess.getAllWithoutContent();
+      var data = await DataAccess.getAllWithTruncatedContent();
       _allNotes.addAll(data);
     }
 
@@ -57,7 +84,7 @@ class _NoteListPageState extends State<NoteListPage> {
       padding: EdgeInsets.all(8.0),
       itemCount: _allNotes.length,
       itemBuilder: (context, index) {
-        return _buildRow(_allNotes[index].title);
+        return _buildRow(_allNotes[index]);
       },
       separatorBuilder: (context, index) {
         return Divider();
@@ -65,22 +92,40 @@ class _NoteListPageState extends State<NoteListPage> {
     );
   }
 
-  void _addItemToList (NoteItem note){
-    DataAccess.addNote(note);
+  Widget _buildRow(NoteItem note) {
+      return ListTile(
+        key: ValueKey(note.id),
+        title: Text(note.title),
+        subtitle: Text(note.content),
+        leading: Icon(
+          Icons.note
+        ),
+        onTap: () async {
+          final NoteItem result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UpdateNotePage(noteId:note.id)),
+          );
+          _updateNote(result);
+        },
+      );
+    }
+
+
+  void _addNote (NoteItem note){
     setState(() {
       _allNotes.add(note);
     });
   }
 
-  Widget _buildRow(String item) {
-      return ListTile(
-        title: Text(item),
-        leading: Icon(
-          Icons.note
-        ),
-        onTap: () {
-
-        },
-      );
+  void _updateNote (NoteItem note){
+    int index = _allNotes.indexWhere((element) => element.id == note.id);
+    if(index < 0){
+      return;
     }
+
+    note.content = StringUtils.truncateWithEllipsis(note.content);
+    setState(() {
+      _allNotes[index] = note;
+    });
+  }
 }
