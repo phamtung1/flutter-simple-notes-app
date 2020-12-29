@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/note-item.dart';
 
 class AddNotePage extends StatefulWidget {
   @override
@@ -17,7 +18,12 @@ class AddNotePageState extends State<AddNotePage> {
     return WillPopScope(
       onWillPop: () async {
         if (_contentInputController.text.isEmpty || _formKey.currentState.validate()) {
-          Navigator.pop(context, _titleInputController.text);
+          var note = NoteItem(
+            title: _titleInputController.text,
+            content: _contentInputController.text
+          );
+
+          Navigator.pop(context, note);
         }
 
         return Future.value(false);
