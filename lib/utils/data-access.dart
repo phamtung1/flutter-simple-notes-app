@@ -3,17 +3,14 @@ import 'package:flutter_app/utils/string-utils.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-const DatabaseName = "simple_note_app_demo.db";
+const DatabaseName = "simple_note_app_demo3.db";
 const TableName = "notes";
 
 class DataAccess {
 
   static Future<int> addNote(NoteItem note) async {
     final Database db = await _openDb();
-
-    // `conflictAlgorithm` to use in case the same dog is inserted twice.
-    //
-    // In this case, replace any previous data.
+    note.modifiedDate = new DateTime.now().millisecondsSinceEpoch;
     return await db.insert(
       TableName,
       note.toMap(),
@@ -49,12 +46,34 @@ class DataAccess {
     });
   }
 
+  static Future<void> update(NoteItem note) async {
+    final db = await _openDb();
+    note.modifiedDate = new DateTime.now().millisecondsSinceEpoch;
+    await db.update(
+      TableName,
+      note.toMap(),
+      where: "id = ?",
+      whereArgs: [note.id],
+    );
+  }
+
+  // static Future<void> delete(int id) async {
+  //   final db = await _openDb();
+  //
+  //   await db.delete(
+  //     TableName,
+  //     where: "id = ?",
+  //     whereArgs: [id],
+  //   );
+  // }
+
+
   static Future<Database> _openDb() async {
     final Future<Database> database = openDatabase(
       join(await getDatabasesPath(), DatabaseName),
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT, content TEXT)",
+          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT, content TEXT, deleted BOOL, modifiedDate INTEGER)",
         );
       },
       // Set the version. This executes the onCreate function and provides a

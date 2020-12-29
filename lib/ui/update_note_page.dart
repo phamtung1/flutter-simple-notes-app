@@ -26,29 +26,26 @@ class UpdateNotePageState extends State<UpdateNotePage> {
 
   @override
   void initState() {
-    super.initState();
-
     DataAccess.getSingle(noteId).then((value) => {
           setState(() {
             _note = value;
           })
         });
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (_contentInputController.text.isEmpty ||
-            _formKey.currentState.validate()) {
-          var note = NoteItem(
-              id: noteId,
-              title: _titleInputController.text,
-              content: _contentInputController.text);
+        if (_formKey.currentState.validate()) {
+          _note.title = _titleInputController.text;
+          _note.content = _contentInputController.text;
 
-          await DataAccess.addNote(note);
+          await DataAccess.update(_note);
 
-          Navigator.pop(context, note);
+          Navigator.pop(context, _note);
         }
 
         return Future.value(false);
@@ -57,7 +54,11 @@ class UpdateNotePageState extends State<UpdateNotePage> {
         appBar: AppBar(
           title: Text('Update Note'),
           actions: [
-            IconButton(icon: Icon(Icons.delete), onPressed: () {}),
+            IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  showAlertDialog(context);
+                }),
           ],
         ),
         body: Container(
@@ -111,5 +112,40 @@ class UpdateNotePageState extends State<UpdateNotePage> {
             ],
           ),
         ));
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context); // dismiss dialog
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () async {
+        _note.deleted = true;
+        await DataAccess.update(_note); // soft delete
+        Navigator.pop(context); // dismiss dialog
+        Navigator.pop(context, _note); // back to previous page
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete"),
+      content: Text("Are you sure you want to delete this note?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(onWillPop: () async => false, child: alert);
+      },
+    );
   }
 }

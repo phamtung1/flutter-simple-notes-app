@@ -16,17 +16,29 @@ class _NoteListPageState extends State<NoteListPage> {
   final List<NoteItem> _allNotes = <NoteItem>[];
 
   @override
+  void initState() {
+    DataAccess.getAllWithTruncatedContent().then((value) => () {
+          setState(() {
+            _allNotes.addAll(value);
+          });
+        });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return FutureBuilder<Widget>(
-      future:  _buildNoteList(),
+        future: _buildNoteList(),
         builder: (context, AsyncSnapshot<Widget> snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
               appBar: AppBar(
                 title: Text('Simple Notes App'),
                 actions: [
-                  IconButton(icon: Icon(Icons.note_add),
-                      onPressed:  () {
+                  IconButton(
+                      icon: Icon(Icons.note_add),
+                      onPressed: () {
                         _navigateToAddNotePage(context);
                       }),
                 ],
@@ -38,29 +50,26 @@ class _NoteListPageState extends State<NoteListPage> {
                 appBar: AppBar(
                   title: Text('Simple Notes App'),
                 ),
-                body: _buildLoadingScreen(context)
-            );
+                body: _buildLoadingScreen(context));
           }
-        }
-    );
+        });
   }
 
-  Widget _buildLoadingScreen(BuildContext context){
+  Widget _buildLoadingScreen(BuildContext context) {
     return Center(
         child: SizedBox(
-          width: 100,
-          height: 100,
-          child: new Column(
-            children: [
-              CircularProgressIndicator(
-                value: 0.5,
-                backgroundColor: Colors.grey,
-              ),
-              Container(margin: EdgeInsets.only(top: 15),child:Text("Loading" )),
-            ],
+      width: 100,
+      height: 100,
+      child: new Column(
+        children: [
+          CircularProgressIndicator(
+            value: 0.5,
+            backgroundColor: Colors.grey,
           ),
-        )
-    );
+          Container(margin: EdgeInsets.only(top: 15), child: Text("Loading")),
+        ],
+      ),
+    ));
   }
 
   _navigateToAddNotePage(BuildContext context) async {
@@ -69,17 +78,12 @@ class _NoteListPageState extends State<NoteListPage> {
       MaterialPageRoute(builder: (context) => AddNotePage()),
     );
 
-    if(result != null && result.title.isNotEmpty) {
+    if (result != null && result.title.isNotEmpty) {
       _addNote(result);
     }
   }
 
-  Future<Widget> _buildNoteList() async{
-    if(_allNotes.isEmpty) {
-      var data = await DataAccess.getAllWithTruncatedContent();
-      _allNotes.addAll(data);
-    }
-
+  Future<Widget> _buildNoteList() async {
     return ListView.separated(
       padding: EdgeInsets.all(8.0),
       itemCount: _allNotes.length,
@@ -93,39 +97,45 @@ class _NoteListPageState extends State<NoteListPage> {
   }
 
   Widget _buildRow(NoteItem note) {
-      return ListTile(
-        key: ValueKey(note.id),
-        title: Text(note.title),
-        subtitle: Text(note.content),
-        leading: Icon(
-          Icons.note
-        ),
-        onTap: () async {
-          final NoteItem result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => UpdateNotePage(noteId:note.id)),
-          );
-          _updateNote(result);
-        },
-      );
-    }
+    return ListTile(
+      key: ValueKey(note.id),
+      title: Text(note.title),
+      subtitle: Text(note.content),
+      leading: Icon(Icons.note),
+      onTap: () async {
+        final NoteItem result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => UpdateNotePage(noteId: note.id)),
+        );
+        _updateNote(result);
+      },
+    );
+  }
 
-
-  void _addNote (NoteItem note){
+  void _addNote(NoteItem note) {
     setState(() {
       _allNotes.add(note);
     });
   }
 
-  void _updateNote (NoteItem note){
+  void _updateNote(NoteItem note) {
     int index = _allNotes.indexWhere((element) => element.id == note.id);
-    if(index < 0){
+    if (index < 0) {
       return;
     }
 
-    note.content = StringUtils.truncateWithEllipsis(note.content);
-    setState(() {
-      _allNotes[index] = note;
-    });
+    if (note.deleted == true) {
+      // delete
+      setState(() {
+        _allNotes.removeAt(index);
+      });
+    } else {
+      // update
+      note.content = StringUtils.truncateWithEllipsis(note.content);
+      setState(() {
+        _allNotes[index] = note;
+      });
+    }
   }
 }
