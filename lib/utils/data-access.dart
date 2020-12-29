@@ -1,9 +1,8 @@
 import 'package:flutter_app/models/note-item.dart';
-import 'package:flutter_app/utils/string-utils.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-const DatabaseName = "simple_note_app_demo3.db";
+const DatabaseName = "simple_note_app_demo13.db";
 const TableName = "notes";
 
 class DataAccess {
@@ -24,26 +23,37 @@ class DataAccess {
     final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $TableName WHERE id = $id');
 
     Map<String,dynamic> data = maps.length > 0 ? maps[0] : null;
-    NoteItem note = new NoteItem(
-      id: data['id'],
-      title: data['title'],
-      content: data['content'],
-    );
+    NoteItem note = NoteItem.fromMap(data);
     return Future.value(note);
   }
 
   static Future<List<NoteItem>> getAllWithTruncatedContent() async {
     final Database db = await _openDb();
 
-    final List<Map<String, dynamic>> maps = await db.query(TableName);
+    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $TableName WHERE deleted is null or deleted = 0');
 
     return List.generate(maps.length, (i) {
-      return NoteItem(
-        id: maps[i]['id'],
-        title: maps[i]['title'],
-        content: StringUtils.truncateWithEllipsis(maps[i]['content'])
-      );
+      return NoteItem.fromMapTruncatedContent(maps[i]);
     });
+  }
+
+  static Future<List<NoteItem>> getAllDeletedNotes() async {
+    final Database db = await _openDb();
+
+    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $TableName WHERE deleted = 1');
+
+    return List.generate(maps.length, (i) {
+      return NoteItem.fromMapTruncatedContent(maps[i]);
+    });
+  }
+
+  static Future<void> emptyTrash() async {
+    final Database db = await _openDb();
+
+    await db.delete(
+          TableName,
+          where: "deleted = 1"
+        );
   }
 
   static Future<void> update(NoteItem note) async {
@@ -71,9 +81,16 @@ class DataAccess {
   static Future<Database> _openDb() async {
     final Future<Database> database = openDatabase(
       join(await getDatabasesPath(), DatabaseName),
-      onCreate: (db, version) {
-        return db.execute(
-          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT, content TEXT, deleted BOOL, modifiedDate INTEGER)",
+      onCreate: (db, version) async {
+        db.execute(
+          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT NOT NULL, content TEXT, deleted INTEGER, modifiedDate INTEGER)",
+        );
+        await db.insert(
+            TableName,
+            NoteItem(
+              title: 'Welcome to Simple Notes App',
+              content: 'I presume that you already know how to use this app'
+            ).toMap()
         );
       },
       // Set the version. This executes the onCreate function and provides a

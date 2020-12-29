@@ -2,33 +2,35 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
-import 'package:flutter_app/ui/trash_page.dart';
 import 'package:flutter_app/ui/update_note_page.dart';
 import 'package:flutter_app/utils/data-access.dart';
+import 'package:flutter_app/utils/string-utils.dart';
 import 'add_note_page.dart';
 
-class NoteListPage extends StatefulWidget {
+class TrashPage extends StatefulWidget {
   @override
-  _NoteListPageState createState() => _NoteListPageState();
+  _TrashPageState createState() => _TrashPageState();
 }
 
-class _NoteListPageState extends State<NoteListPage> {
-
+class _TrashPageState extends State<TrashPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<NoteItem>>(
-        future: DataAccess.getAllWithTruncatedContent(),
+        future: DataAccess.getAllDeletedNotes(),
         builder: (context, AsyncSnapshot<List<NoteItem>> snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
               appBar: AppBar(
-                title: Text('Simple Notes App'),
-                actions: [
-                  IconButton(
-                      icon: Icon(Icons.note_add),
-                      onPressed: () {
-                        _navigateToAddNotePage(context);
-                      }),
+                title: Text('Trash'),
+                actions: <Widget>[
+                  FlatButton(
+                    textColor: Colors.white,
+                    onPressed: () {
+                      _showConfirmEmptyTrash(context);
+                    },
+                    child: Text("Empty Trash"),
+                    shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+                  ),
                 ],
               ),
               body: _buildNoteList(snapshot.data),
@@ -61,24 +63,12 @@ class _NoteListPageState extends State<NoteListPage> {
     ));
   }
 
-  _navigateToAddNotePage(BuildContext context) async {
-    final NoteItem result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AddNotePage()),
-    );
-
-    if (result != null && result.title.isNotEmpty) {
-      setState(() { });
-    }
-  }
-
   Widget _buildNoteList(List<NoteItem> notes) {
     if(notes.isEmpty){
       return Center(
-          child: Text('No Data')
+        child: Text('Trash is empty')
       );
     }
-
 
     return ListView.separated(
       padding: EdgeInsets.all(8.0),
@@ -98,14 +88,6 @@ class _NoteListPageState extends State<NoteListPage> {
       title: Text(note.title),
       subtitle: Text(note.content),
       leading: Icon(Icons.note),
-      onTap: () async {
-        final NoteItem result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => UpdateNotePage(noteId: note.id)),
-        );
-        setState(() { });
-      },
     );
   }
 
@@ -129,18 +111,20 @@ class _NoteListPageState extends State<NoteListPage> {
             padding: EdgeInsets.all(0.0)
         ),
       ),
-          ListTile(
-            title: Text('Notes'),
-            tileColor: Colors.grey,
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
+         WillPopScope(onWillPop: () async => false,
+             child: ListTile(
+               title: Text('Notes'),
+               onTap: () {
+                 Navigator.pop(context);
+                 Navigator.pop(context);
+               },
+             ),
+         ),
           ListTile(
             title: Text('Trash'),
-            onTap: () async {
-              Navigator.pop(context); // close the drawer
-              _navigateToTrashPage(context);
+              tileColor: Colors.grey,
+            onTap: () {
+              Navigator.pop(context);
             },
           ),
         ],
@@ -149,10 +133,37 @@ class _NoteListPageState extends State<NoteListPage> {
   }
 
 
-  _navigateToTrashPage(BuildContext context) async {
-    final NoteItem result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => TrashPage()),
+  void _showConfirmEmptyTrash(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = FlatButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context); // dismiss dialog
+      },
+    );
+    Widget continueButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () async {
+        await DataAccess.emptyTrash();
+        Navigator.pop(context); // dismiss dialog
+        setState(() { });
+      },
+    );
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Empty Trash"),
+      content: Text("Are you sure you want to permanently delete all notes in the trash?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(onWillPop: () async => false, child: alert);
+      },
     );
   }
 }

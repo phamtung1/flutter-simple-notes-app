@@ -1,8 +1,10 @@
 class StringUtils {
 
   static String truncateWithEllipsis(String myString, [int cutoff = 20]) {
-    return (myString.length <= cutoff)
+    var result = (myString.length <= cutoff)
         ? myString
         : '${myString.substring(0, cutoff)}...';
+
+    return result.replaceAll("\n", " ");
   }
 }

@@ -57,7 +57,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
             IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  showAlertDialog(context);
+                  _showConfirmDelete(context);
                 }),
           ],
         ),
@@ -114,7 +114,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
         ));
   }
 
-  showAlertDialog(BuildContext context) {
+  void _showConfirmDelete(BuildContext context) {
     // set up the buttons
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
@@ -125,7 +125,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
     Widget continueButton = FlatButton(
       child: Text("OK"),
       onPressed: () async {
-        _note.deleted = true;
+        _note.deleted = 1;
         await DataAccess.update(_note); // soft delete
         Navigator.pop(context); // dismiss dialog
         Navigator.pop(context, _note); // back to previous page
