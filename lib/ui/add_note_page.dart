@@ -18,8 +18,12 @@ class AddNotePageState extends State<AddNotePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (_contentInputController.text.isEmpty ||
-            _formKey.currentState.validate()) {
+        if(_titleInputController.text.isEmpty && _contentInputController.text.isEmpty){
+          Navigator.pop(context);
+          return Future.value(false);
+        }
+
+        if (_formKey.currentState.validate()) {
           var note = NoteItem(
               title: _titleInputController.text,
               content: _contentInputController.text);
@@ -72,10 +76,13 @@ class AddNotePageState extends State<AddNotePage> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: TextFormField(
                     controller: _contentInputController,
-                    decoration: InputDecoration(hintText: "Note"),
+                    decoration: InputDecoration(
+                      hintText: "Note",
+                      border: const OutlineInputBorder(),
+                    ),
                     maxLines: 30,
                     keyboardType: TextInputType.multiline),
               ),

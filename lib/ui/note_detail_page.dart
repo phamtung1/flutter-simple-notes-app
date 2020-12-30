@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
 import 'package:flutter_app/utils/data-access.dart';
 
-class UpdateNotePage extends StatefulWidget {
+class NoteDetailPage extends StatefulWidget {
   final int noteId;
 
-  UpdateNotePage({this.noteId});
+  NoteDetailPage({this.noteId});
 
   @override
-  UpdateNotePageState createState() {
-    return UpdateNotePageState(noteId: this.noteId);
+  NoteDetailPageState createState() {
+    return NoteDetailPageState(noteId: this.noteId);
   }
 }
 
-class UpdateNotePageState extends State<UpdateNotePage> {
+class NoteDetailPageState extends State<NoteDetailPage> {
   final _formKey = GlobalKey<FormState>();
   final _titleInputController = TextEditingController();
   final _contentInputController = TextEditingController();
@@ -22,7 +22,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
 
   final int noteId;
 
-  UpdateNotePageState({this.noteId});
+  NoteDetailPageState({this.noteId});
 
   @override
   void initState() {
@@ -37,23 +37,15 @@ class UpdateNotePageState extends State<UpdateNotePage> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (_formKey.currentState.validate()) {
-          _note.title = _titleInputController.text;
-          _note.content = _contentInputController.text;
-
-          await DataAccess.update(_note);
-
-          Navigator.pop(context, _note);
-        }
-
-        return Future.value(false);
-      },
-      child: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
-          title: Text('Update Note'),
+          title: Text('Note Details'),
           actions: [
+            IconButton(
+                icon: Icon(Icons.restore),
+                onPressed: () async {
+                  _restoreNote(context);
+                }),
             IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
@@ -65,14 +57,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
           margin: EdgeInsets.all(10),
           child: SingleChildScrollView(child: _buildForm()),
         ),
-      ),
     );
-  }
-
-  @override
-  void dispose() {
-    _titleInputController.dispose();
-    super.dispose();
   }
 
   Widget _buildForm() {
@@ -80,7 +65,6 @@ class UpdateNotePageState extends State<UpdateNotePage> {
       _titleInputController.text = _note.title;
       _contentInputController.text = _note.content;
     }
-
     return Form(
         key: _formKey,
         child: Padding(
@@ -89,25 +73,23 @@ class UpdateNotePageState extends State<UpdateNotePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextFormField(
+                readOnly: true,
                 controller: _titleInputController,
                 decoration: InputDecoration(
                   labelText: "Title",
                   border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter the title';
-                  }
-                  return null;
-                },
+                  filled: true
+                )
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: TextFormField(
+                    readOnly: true,
                     controller: _contentInputController,
                     decoration: InputDecoration(
                       hintText: "Note",
                       border: const OutlineInputBorder(),
+                      filled: true
                     ),
                     maxLines: 30,
                     keyboardType: TextInputType.multiline),
@@ -115,6 +97,12 @@ class UpdateNotePageState extends State<UpdateNotePage> {
             ],
           ),
         ));
+  }
+
+  Future<void> _restoreNote(BuildContext context) async {
+      _note.deleted = null;
+      await DataAccess.update(_note);
+      Navigator.pop(context, _note);
   }
 
   void _showConfirmDelete(BuildContext context) {
@@ -128,8 +116,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
     Widget continueButton = FlatButton(
       child: Text("OK"),
       onPressed: () async {
-        _note.deleted = 1;
-        await DataAccess.update(_note); // soft delete
+        await DataAccess.delete(_note.id);
         Navigator.pop(context); // dismiss dialog
         Navigator.pop(context, _note); // back to previous page
       },
@@ -137,7 +124,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Delete"),
-      content: Text("Are you sure you want to delete this note?"),
+      content: Text("Are you sure you want to permanently delete this note from the trash?"),
       actions: [
         cancelButton,
         continueButton,

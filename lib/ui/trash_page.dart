@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
+import 'package:flutter_app/ui/note_detail_page.dart';
 import 'package:flutter_app/ui/update_note_page.dart';
 import 'package:flutter_app/utils/data-access.dart';
 import 'package:flutter_app/utils/string-utils.dart';
@@ -22,16 +23,7 @@ class _TrashPageState extends State<TrashPage> {
             return Scaffold(
               appBar: AppBar(
                 title: Text('Trash'),
-                actions: <Widget>[
-                  FlatButton(
-                    textColor: Colors.white,
-                    onPressed: () {
-                      _showConfirmEmptyTrash(context);
-                    },
-                    child: Text("Empty Trash"),
-                    shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-                  ),
-                ],
+                actions: _buildActionButtons(snapshot.data),
               ),
               body: _buildNoteList(snapshot.data),
               drawer: _buildDrawer(context),
@@ -44,6 +36,23 @@ class _TrashPageState extends State<TrashPage> {
                 body: _buildLoadingScreen(context));
           }
         });
+  }
+
+  List<Widget> _buildActionButtons(List<NoteItem> notes){
+    if(notes.isEmpty){
+      return null;
+    }
+
+    return [
+      FlatButton(
+      textColor: Colors.white,
+      onPressed: () {
+        _showConfirmEmptyTrash(context);
+      },
+      child: Text("Empty Trash"),
+      shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+    )
+    ];
   }
 
   Widget _buildLoadingScreen(BuildContext context) {
@@ -74,7 +83,7 @@ class _TrashPageState extends State<TrashPage> {
       padding: EdgeInsets.all(8.0),
       itemCount: notes.length,
       itemBuilder: (context, index) {
-        return _buildRow(notes[index]);
+        return _buildRow(context, notes[index]);
       },
       separatorBuilder: (context, index) {
         return Divider();
@@ -82,12 +91,25 @@ class _TrashPageState extends State<TrashPage> {
     );
   }
 
-  Widget _buildRow(NoteItem note) {
+  Widget _buildRow(BuildContext context, NoteItem note) {
     return ListTile(
       key: ValueKey(note.id),
       title: Text(note.title),
       subtitle: Text(note.content),
       leading: Icon(Icons.note),
+      onTap: () async {
+        final NoteItem result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => NoteDetailPage(noteId: note.id)),
+        );
+        if (result != null && result.deleted != 1){
+          final snackBar = SnackBar(content: Text('Note has been restored!'));
+          Scaffold.of(context).showSnackBar(snackBar);
+        }
+
+        setState(() { });
+      },
     );
   }
 
@@ -97,32 +119,32 @@ class _TrashPageState extends State<TrashPage> {
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: <Widget>[
-        Container(
-        height: 100.0,
-        child: DrawerHeader(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Simple Notes App', style: TextStyle(color: Colors.white)),
+          Container(
+            height: 100.0,
+            child: DrawerHeader(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text('Simple Notes App', style: TextStyle(color: Colors.white)),
+                ),
+                decoration: BoxDecoration(
+                    color: Colors.blue
+                ),
+                margin: EdgeInsets.all(0.0),
+                padding: EdgeInsets.all(0.0)
             ),
-            decoration: BoxDecoration(
-                color: Colors.blue
+          ),
+          WillPopScope(onWillPop: () async => false,
+            child: ListTile(
+              title: Text('Notes'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
             ),
-            margin: EdgeInsets.all(0.0),
-            padding: EdgeInsets.all(0.0)
-        ),
-      ),
-         WillPopScope(onWillPop: () async => false,
-             child: ListTile(
-               title: Text('Notes'),
-               onTap: () {
-                 Navigator.pop(context);
-                 Navigator.pop(context);
-               },
-             ),
-         ),
+          ),
           ListTile(
             title: Text('Trash'),
-              tileColor: Colors.grey,
+            tileColor: Colors.grey,
             onTap: () {
               Navigator.pop(context);
             },
@@ -131,7 +153,6 @@ class _TrashPageState extends State<TrashPage> {
       ),
     );
   }
-
 
   void _showConfirmEmptyTrash(BuildContext context) {
     // set up the buttons

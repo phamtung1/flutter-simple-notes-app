@@ -67,15 +67,15 @@ class DataAccess {
     );
   }
 
-  // static Future<void> delete(int id) async {
-  //   final db = await _openDb();
-  //
-  //   await db.delete(
-  //     TableName,
-  //     where: "id = ?",
-  //     whereArgs: [id],
-  //   );
-  // }
+  static Future<void> delete(int id) async {
+    final db = await _openDb();
+
+    await db.delete(
+      TableName,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
 
 
   static Future<Database> _openDb() async {
