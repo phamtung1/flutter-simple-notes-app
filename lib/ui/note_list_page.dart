@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:simple_notes_app/helpers/string-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/ui/trash_page.dart';
 import 'package:simple_notes_app/ui/update_note_page.dart';
@@ -98,7 +99,10 @@ class _NoteListPageState extends State<NoteListPage> {
       key: ValueKey(note.id),
       title: Text(note.title),
       subtitle: Text(note.content),
-      leading: Icon(Icons.note),
+      trailing: Text(
+          StringHelper.formatDate(note.modifiedDate, 'dd MMM yyyy'),
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+      ),
       onTap: () async {
         final NoteItem result = await Navigator.push(
           context,

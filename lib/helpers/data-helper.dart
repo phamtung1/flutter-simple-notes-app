@@ -30,7 +30,7 @@ class DataHelper {
   static Future<List<NoteItem>> getAllWithTruncatedContent() async {
     final Database db = await _openDb();
 
-    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $TableName WHERE deleted is null or deleted = 0');
+    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $TableName WHERE deleted is null or deleted = 0 ORDER BY modifiedDate desc');
 
     return List.generate(maps.length, (i) {
       return NoteItem.fromMapTruncatedContent(maps[i]);
@@ -40,7 +40,7 @@ class DataHelper {
   static Future<List<NoteItem>> getAllDeletedNotes() async {
     final Database db = await _openDb();
 
-    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $TableName WHERE deleted = 1');
+    final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM $TableName WHERE deleted = 1  ORDER BY modifiedDate desc');
 
     return List.generate(maps.length, (i) {
       return NoteItem.fromMapTruncatedContent(maps[i]);
