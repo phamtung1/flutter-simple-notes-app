@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
 import 'package:flutter_app/utils/data-access.dart';
 
+import 'components/custom_note_detail_form.dart';
+
 class UpdateNotePage extends StatefulWidget {
   final int noteId;
 
@@ -81,40 +83,11 @@ class UpdateNotePageState extends State<UpdateNotePage> {
       _contentInputController.text = _note.content;
     }
 
-    return Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                controller: _titleInputController,
-                decoration: InputDecoration(
-                  labelText: "Title",
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter the title';
-                  }
-                  return null;
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                    controller: _contentInputController,
-                    decoration: InputDecoration(
-                      hintText: "Note",
-                      border: const OutlineInputBorder(),
-                    ),
-                    maxLines: 30,
-                    keyboardType: TextInputType.multiline),
-              ),
-            ],
-          ),
-        ));
+    return CustomNoteDetailForm(
+      key: _formKey,
+      titleController: _titleInputController,
+      contentController: _contentInputController,
+    );
   }
 
   void _showConfirmDelete(BuildContext context) {

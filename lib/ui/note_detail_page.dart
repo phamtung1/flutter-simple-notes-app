@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
 import 'package:flutter_app/utils/data-access.dart';
 
+import 'components/custom_note_detail_form.dart';
+
 class NoteDetailPage extends StatefulWidget {
   final int noteId;
 
@@ -65,38 +67,12 @@ class NoteDetailPageState extends State<NoteDetailPage> {
       _titleInputController.text = _note.title;
       _contentInputController.text = _note.content;
     }
-    return Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                readOnly: true,
-                controller: _titleInputController,
-                decoration: InputDecoration(
-                  labelText: "Title",
-                  border: const OutlineInputBorder(),
-                  filled: true
-                )
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                    readOnly: true,
-                    controller: _contentInputController,
-                    decoration: InputDecoration(
-                      hintText: "Note",
-                      border: const OutlineInputBorder(),
-                      filled: true
-                    ),
-                    maxLines: 30,
-                    keyboardType: TextInputType.multiline),
-              ),
-            ],
-          ),
-        ));
+    return CustomNoteDetailForm(
+      key: _formKey,
+      titleController: _titleInputController,
+      contentController: _contentInputController,
+      readOnly: true,
+    );
   }
 
   Future<void> _restoreNote(BuildContext context) async {

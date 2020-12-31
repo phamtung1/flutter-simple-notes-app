@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/note-item.dart';
 import 'package:flutter_app/utils/data-access.dart';
 
+import 'components/custom_note_detail_form.dart';
+
 class AddNotePage extends StatefulWidget {
   @override
   AddNotePageState createState() {
@@ -18,7 +20,8 @@ class AddNotePageState extends State<AddNotePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if(_titleInputController.text.isEmpty && _contentInputController.text.isEmpty){
+        if (_titleInputController.text.isEmpty &&
+            _contentInputController.text.isEmpty) {
           Navigator.pop(context);
           return Future.value(false);
         }
@@ -42,7 +45,12 @@ class AddNotePageState extends State<AddNotePage> {
         ),
         body: Container(
           margin: EdgeInsets.all(10),
-          child: SingleChildScrollView(child: _buildForm()),
+          child: SingleChildScrollView(
+              child: CustomNoteDetailForm(
+            key: _formKey,
+            titleController: _titleInputController,
+            contentController: _contentInputController,
+          )),
         ),
       ),
     );
@@ -52,42 +60,5 @@ class AddNotePageState extends State<AddNotePage> {
   void dispose() {
     _titleInputController.dispose();
     super.dispose();
-  }
-
-  Widget _buildForm() {
-    return Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                controller: _titleInputController,
-                decoration: InputDecoration(
-                  labelText: "Title",
-                  border: const OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter the title';
-                  }
-                  return null;
-                },
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: TextFormField(
-                    controller: _contentInputController,
-                    decoration: InputDecoration(
-                      hintText: "Note",
-                      border: const OutlineInputBorder(),
-                    ),
-                    maxLines: 30,
-                    keyboardType: TextInputType.multiline),
-              ),
-            ],
-          ),
-        ));
   }
 }
