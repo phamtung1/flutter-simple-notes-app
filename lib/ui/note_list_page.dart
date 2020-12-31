@@ -6,6 +6,7 @@ import 'package:simple_notes_app/ui/trash_page.dart';
 import 'package:simple_notes_app/ui/update_note_page.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 import 'add_note_page.dart';
+import 'components/custom_drawer.dart';
 
 class NoteListPage extends StatefulWidget {
   @override
@@ -110,41 +111,16 @@ class _NoteListPageState extends State<NoteListPage> {
   }
 
   Widget _buildDrawer(BuildContext context){
-    return Drawer(
-      child: ListView(
-        // Important: Remove any padding from the ListView.
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-        Container(
-        height: 100.0,
-        child: DrawerHeader(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Simple Notes App', style: TextStyle(color: Colors.white)),
-            ),
-            decoration: BoxDecoration(
-                color: Colors.blue
-            ),
-            margin: EdgeInsets.all(0.0),
-            padding: EdgeInsets.all(0.0)
-        ),
-      ),
-          ListTile(
-            title: Text('Notes'),
-            tileColor: Colors.grey,
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-          ListTile(
-            title: Text('Trash'),
-            onTap: () async {
-              Navigator.pop(context); // close the drawer
-              _navigateToTrashPage(context);
-            },
-          ),
-        ],
-      ),
+    return CustomDrawer(
+      context: context,
+        selectedIndex: 0,
+        onTapNotes: () {
+          Navigator.pop(context);
+        },
+      onTapTrash: () async {
+        Navigator.pop(context); // close the drawer
+        _navigateToTrashPage(context);
+      }
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_notes_app/helpers/ui-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 
@@ -59,7 +60,17 @@ class UpdateNotePageState extends State<UpdateNotePage> {
             IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  _showConfirmDelete(context);
+                  UIHelper.showConfirm(
+                      context: context,
+                      title: 'Delete',
+                      message: 'Are you sure you want to delete this note?',
+                    onOKPressed:  () async {
+                      _note.deleted = 1;
+                      await DataHelper.update(_note); // soft delete
+                      Navigator.pop(context); // dismiss dialog
+                      Navigator.pop(context, _note); // back to previous page
+                    },
+                  );
                 }),
           ],
         ),
@@ -87,41 +98,6 @@ class UpdateNotePageState extends State<UpdateNotePage> {
       key: _formKey,
       titleController: _titleInputController,
       contentController: _contentInputController,
-    );
-  }
-
-  void _showConfirmDelete(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.pop(context); // dismiss dialog
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () async {
-        _note.deleted = 1;
-        await DataHelper.update(_note); // soft delete
-        Navigator.pop(context); // dismiss dialog
-        Navigator.pop(context, _note); // back to previous page
-      },
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete"),
-      content: Text("Are you sure you want to delete this note?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return WillPopScope(onWillPop: () async => false, child: alert);
-      },
     );
   }
 }

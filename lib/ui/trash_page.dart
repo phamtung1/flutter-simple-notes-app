@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:simple_notes_app/helpers/ui-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/ui/note_detail_page.dart';
-import 'package:simple_notes_app/ui/update_note_page.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
-import 'package:simple_notes_app/helpers/string-helper.dart';
-import 'add_note_page.dart';
+
+import 'components/custom_drawer.dart';
 
 class TrashPage extends StatefulWidget {
   @override
@@ -47,7 +47,16 @@ class _TrashPageState extends State<TrashPage> {
       FlatButton(
       textColor: Colors.white,
       onPressed: () {
-        _showConfirmEmptyTrash(context);
+        UIHelper.showConfirm(
+          context: context,
+          title: 'Empty Trash',
+          message: 'Are you sure you want to permanently delete all notes in the trash?',
+          onOKPressed:  () async {
+            await DataHelper.emptyTrash();
+            Navigator.pop(context); // dismiss dialog
+            setState(() { });
+          },
+        );
       },
       child: Text("Empty Trash"),
       shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
@@ -114,77 +123,16 @@ class _TrashPageState extends State<TrashPage> {
   }
 
   Widget _buildDrawer(BuildContext context){
-    return Drawer(
-      child: ListView(
-        // Important: Remove any padding from the ListView.
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          Container(
-            height: 100.0,
-            child: DrawerHeader(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text('Simple Notes App', style: TextStyle(color: Colors.white)),
-                ),
-                decoration: BoxDecoration(
-                    color: Colors.blue
-                ),
-                margin: EdgeInsets.all(0.0),
-                padding: EdgeInsets.all(0.0)
-            ),
-          ),
-          WillPopScope(onWillPop: () async => false,
-            child: ListTile(
-              title: Text('Notes'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          ListTile(
-            title: Text('Trash'),
-            tileColor: Colors.grey,
-            onTap: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showConfirmEmptyTrash(BuildContext context) {
-    // set up the buttons
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.pop(context); // dismiss dialog
-      },
-    );
-    Widget continueButton = FlatButton(
-      child: Text("OK"),
-      onPressed: () async {
-        await DataHelper.emptyTrash();
-        Navigator.pop(context); // dismiss dialog
-        setState(() { });
-      },
-    );
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Empty Trash"),
-      content: Text("Are you sure you want to permanently delete all notes in the trash?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return WillPopScope(onWillPop: () async => false, child: alert);
-      },
+    return CustomDrawer(
+        context: context,
+        selectedIndex: 1,
+        onTapNotes: () {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+        onTapTrash: () async {
+          Navigator.pop(context);
+        }
     );
   }
 }
