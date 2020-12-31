@@ -1,4 +1,4 @@
-class StringUtils {
+class StringHelper {
 
   static String truncateWithEllipsis(String myString, [int cutoff = 20]) {
     var result = (myString.length <= cutoff)

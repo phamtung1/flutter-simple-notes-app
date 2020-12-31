@@ -1,11 +1,11 @@
-import 'package:flutter_app/models/note-item.dart';
+import 'package:simple_notes_app/models/note-item.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 const DatabaseName = "simple_note_app_demo13.db";
 const TableName = "notes";
 
-class DataAccess {
+class DataHelper {
 
   static Future<int> addNote(NoteItem note) async {
     final Database db = await _openDb();

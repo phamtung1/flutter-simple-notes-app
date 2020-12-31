@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/note-item.dart';
-import 'package:flutter_app/ui/note_detail_page.dart';
-import 'package:flutter_app/ui/update_note_page.dart';
-import 'package:flutter_app/utils/data-access.dart';
-import 'package:flutter_app/utils/string-utils.dart';
+import 'package:simple_notes_app/models/note-item.dart';
+import 'package:simple_notes_app/ui/note_detail_page.dart';
+import 'package:simple_notes_app/ui/update_note_page.dart';
+import 'package:simple_notes_app/helpers/data-helper.dart';
+import 'package:simple_notes_app/helpers/string-helper.dart';
 import 'add_note_page.dart';
 
 class TrashPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _TrashPageState extends State<TrashPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<NoteItem>>(
-        future: DataAccess.getAllDeletedNotes(),
+        future: DataHelper.getAllDeletedNotes(),
         builder: (context, AsyncSnapshot<List<NoteItem>> snapshot) {
           if (snapshot.hasData) {
             return Scaffold(
@@ -165,7 +165,7 @@ class _TrashPageState extends State<TrashPage> {
     Widget continueButton = FlatButton(
       child: Text("OK"),
       onPressed: () async {
-        await DataAccess.emptyTrash();
+        await DataHelper.emptyTrash();
         Navigator.pop(context); // dismiss dialog
         setState(() { });
       },

@@ -1,4 +1,4 @@
-import 'package:flutter_app/utils/string-utils.dart';
+import 'package:simple_notes_app/helpers/string-helper.dart';
 
 class NoteItem {
   int id;
@@ -30,7 +30,7 @@ class NoteItem {
   factory NoteItem.fromMapTruncatedContent(Map<String, dynamic> data) => new NoteItem(
     id: data['id'],
     title: data['title'],
-    content: StringUtils.truncateWithEllipsis(data['content']),
+    content: StringHelper.truncateWithEllipsis(data['content']),
     deleted: data['deleted'],
     modifiedDate: data['modifiedDate'],
   );

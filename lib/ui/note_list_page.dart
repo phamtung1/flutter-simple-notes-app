@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/note-item.dart';
-import 'package:flutter_app/ui/trash_page.dart';
-import 'package:flutter_app/ui/update_note_page.dart';
-import 'package:flutter_app/utils/data-access.dart';
+import 'package:simple_notes_app/models/note-item.dart';
+import 'package:simple_notes_app/ui/trash_page.dart';
+import 'package:simple_notes_app/ui/update_note_page.dart';
+import 'package:simple_notes_app/helpers/data-helper.dart';
 import 'add_note_page.dart';
 
 class NoteListPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _NoteListPageState extends State<NoteListPage> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<NoteItem>>(
-        future: DataAccess.getAllWithTruncatedContent(),
+        future: DataHelper.getAllWithTruncatedContent(),
         builder: (context, AsyncSnapshot<List<NoteItem>> snapshot) {
           if (snapshot.hasData) {
             return Scaffold(

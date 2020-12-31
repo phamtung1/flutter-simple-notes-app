@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/note-item.dart';
-import 'package:flutter_app/utils/data-access.dart';
+import 'package:simple_notes_app/models/note-item.dart';
+import 'package:simple_notes_app/helpers/data-helper.dart';
 
 import 'components/custom_note_detail_form.dart';
 
@@ -31,7 +31,7 @@ class AddNotePageState extends State<AddNotePage> {
               title: _titleInputController.text,
               content: _contentInputController.text);
 
-          var id = await DataAccess.addNote(note);
+          var id = await DataHelper.addNote(note);
           note.id = id;
 
           Navigator.pop(context, note);

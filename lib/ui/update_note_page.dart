@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/note-item.dart';
-import 'package:flutter_app/utils/data-access.dart';
+import 'package:simple_notes_app/models/note-item.dart';
+import 'package:simple_notes_app/helpers/data-helper.dart';
 
 import 'components/custom_note_detail_form.dart';
 
@@ -28,7 +28,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
 
   @override
   void initState() {
-    DataAccess.getSingle(noteId).then((value) => {
+    DataHelper.getSingle(noteId).then((value) => {
           setState(() {
             _note = value;
           })
@@ -45,7 +45,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
           _note.title = _titleInputController.text;
           _note.content = _contentInputController.text;
 
-          await DataAccess.update(_note);
+          await DataHelper.update(_note);
 
           Navigator.pop(context, _note);
         }
@@ -102,7 +102,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
       child: Text("OK"),
       onPressed: () async {
         _note.deleted = 1;
-        await DataAccess.update(_note); // soft delete
+        await DataHelper.update(_note); // soft delete
         Navigator.pop(context); // dismiss dialog
         Navigator.pop(context, _note); // back to previous page
       },
