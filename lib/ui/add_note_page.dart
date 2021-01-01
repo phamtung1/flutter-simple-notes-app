@@ -3,7 +3,7 @@ import 'package:simple_notes_app/helpers/ui-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 
-import 'components/custom_note_detail_form.dart';
+import 'components/my_note_detail_form.dart';
 
 class AddNotePage extends StatefulWidget {
   @override
@@ -63,7 +63,7 @@ class AddNotePageState extends State<AddNotePage> {
         body: Container(
           margin: EdgeInsets.all(10),
           child: SingleChildScrollView(
-              child: CustomNoteDetailForm(
+              child: MyNoteDetailForm(
             noteColor: _currentColor,
             key: _formKey,
             titleController: _titleInputController,

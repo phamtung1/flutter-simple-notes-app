@@ -7,7 +7,7 @@ import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/ui/note_detail_page.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 
-import 'components/custom_drawer.dart';
+import 'components/my_drawer.dart';
 
 class TrashPage extends StatefulWidget {
   @override
@@ -125,7 +125,7 @@ class _TrashPageState extends State<TrashPage> {
   }
 
   Widget _buildDrawer(BuildContext context) {
-    return CustomDrawer(
+    return MyDrawer(
         context: context,
         selectedIndex: 1,
         onTapNotes: () {

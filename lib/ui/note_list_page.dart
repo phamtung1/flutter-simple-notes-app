@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:simple_notes_app/helpers/string-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/ui/my_search_delegate.dart';
 import 'package:simple_notes_app/ui/trash_page.dart';
 import 'package:simple_notes_app/ui/update_note_page.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 import 'add_note_page.dart';
-import 'components/custom_drawer.dart';
+import 'components/my_drawer.dart';
 import 'components/my_note_list_tile.dart';
 
 class NoteListPage extends StatefulWidget {
@@ -110,7 +109,7 @@ class _NoteListPageState extends State<NoteListPage> {
   }
 
   Widget _buildDrawer(BuildContext context) {
-    return CustomDrawer(
+    return MyDrawer(
         context: context,
         selectedIndex: 0,
         onTapNotes: () {

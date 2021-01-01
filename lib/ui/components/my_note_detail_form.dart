@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:simple_notes_app/helpers/string-helper.dart';
 
-class CustomNoteDetailForm extends Form {
-  CustomNoteDetailForm(
+class MyNoteDetailForm extends Form {
+  MyNoteDetailForm(
       {GlobalKey<FormState> key,
       TextEditingController titleController,
       TextEditingController contentController,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_notes_app/helpers/ui-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
-import 'components/custom_note_detail_form.dart';
+import 'components/my_note_detail_form.dart';
 
 class UpdateNotePage extends StatefulWidget {
   final int noteId;
@@ -108,7 +108,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
       _contentInputController.text = _note.content;
     }
 
-    return CustomNoteDetailForm(
+    return MyNoteDetailForm(
       key: _formKey,
       titleController: _titleInputController,
       contentController: _contentInputController,

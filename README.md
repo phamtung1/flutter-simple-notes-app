@@ -1,12 +1,11 @@
-# Flutter Simple Notes App (Just an Example)
+# Flutter Simple Notes App
 
-A basic note-taking app example using Sqlite for storing data.
+A basic example of note-taking app using Sqlite for storing data.
 
 ## Features
 * List (Add, Update, Delete, Change Color)
 * Trash
 * Search
+* Offline storage
 
-<img src="https://raw.githubusercontent.com/phamtung1/flutter-simple-notes-app/master/screenshots/main_v1.JPEG" />
-
-<img src="https://raw.githubusercontent.com/phamtung1/flutter-simple-notes-app/master/screenshots/update_v1.JPEG" />
+<img src="https://raw.githubusercontent.com/phamtung1/flutter-simple-notes-app/master/screenshots/main_v1.JPEG" /> <img src="https://raw.githubusercontent.com/phamtung1/flutter-simple-notes-app/master/screenshots/update_v1.JPEG" />

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomDrawer extends Drawer {
-  CustomDrawer(
+class MyDrawer extends Drawer {
+  MyDrawer(
       {BuildContext context,
         GestureTapCallback onTapNotes,
         GestureTapCallback onTapTrash,

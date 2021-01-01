@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
-import 'package:simple_notes_app/helpers/string-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/ui/components/my_note_list_tile.dart';
 import 'package:simple_notes_app/ui/update_note_page.dart';
