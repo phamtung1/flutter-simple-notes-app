@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:simple_notes_app/helpers/ui-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
-
 import 'components/custom_note_detail_form.dart';
 
 class UpdateNotePage extends StatefulWidget {
@@ -25,6 +24,9 @@ class UpdateNotePageState extends State<UpdateNotePage> {
 
   final int noteId;
 
+  Color _currentColor;
+  void _onChangeColor(Color color) => setState(() => _currentColor = color);
+
   UpdateNotePageState({this.noteId});
 
   @override
@@ -32,6 +34,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
     DataHelper.getSingle(noteId).then((value) => {
           setState(() {
             _note = value;
+            _currentColor = new Color(_note.colorValue == null ? 0 : _note.colorValue);
           })
         });
 
@@ -45,6 +48,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
         if (_formKey.currentState.validate()) {
           _note.title = _titleInputController.text;
           _note.content = _contentInputController.text;
+          _note.colorValue = _currentColor.value;
 
           await DataHelper.update(_note);
 
@@ -57,6 +61,16 @@ class UpdateNotePageState extends State<UpdateNotePage> {
         appBar: AppBar(
           title: Text('Update Note'),
           actions: [
+            IconButton(
+              icon: Icon(Icons.color_lens),
+              onPressed: () async {
+                UIHelper.showColorDialog(
+                  context: context,
+                  pickerColor: _currentColor,
+                  onColorChanged: _onChangeColor
+                );
+              },
+            ),
             IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
@@ -98,6 +112,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
       key: _formKey,
       titleController: _titleInputController,
       contentController: _contentInputController,
+      noteColor: _currentColor,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_notes_app/helpers/ui-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 
@@ -16,6 +17,10 @@ class AddNotePageState extends State<AddNotePage> {
   final _titleInputController = TextEditingController();
   final _contentInputController = TextEditingController();
 
+  Color _currentColor;
+
+  void _onChangeColor(Color color) => setState(() => _currentColor = color);
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -29,7 +34,8 @@ class AddNotePageState extends State<AddNotePage> {
         if (_formKey.currentState.validate()) {
           var note = NoteItem(
               title: _titleInputController.text,
-              content: _contentInputController.text);
+              content: _contentInputController.text,
+              colorValue: _currentColor == null ? Theme.of(context).canvasColor.value : _currentColor.value);
 
           var id = await DataHelper.addNote(note);
           note.id = id;
@@ -42,11 +48,23 @@ class AddNotePageState extends State<AddNotePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Add New Note'),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.color_lens),
+              onPressed: () async {
+                UIHelper.showColorDialog(
+                    context: context,
+                    pickerColor: _currentColor,
+                    onColorChanged: _onChangeColor);
+              },
+            ),
+          ],
         ),
         body: Container(
           margin: EdgeInsets.all(10),
           child: SingleChildScrollView(
               child: CustomNoteDetailForm(
+            noteColor: _currentColor,
             key: _formKey,
             titleController: _titleInputController,
             contentController: _contentInputController,

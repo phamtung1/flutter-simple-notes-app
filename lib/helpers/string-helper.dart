@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class StringHelper {
@@ -11,6 +12,11 @@ class StringHelper {
   }
 
   static String formatDate(int millisecondsSinceEpoch, String format){
+    if(millisecondsSinceEpoch == null)
+      {
+        return '';
+      }
+
     var date = DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch);
     return DateFormat(format).format(date);
   }

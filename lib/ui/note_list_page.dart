@@ -15,7 +15,6 @@ class NoteListPage extends StatefulWidget {
 }
 
 class _NoteListPageState extends State<NoteListPage> {
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<NoteItem>>(
@@ -70,64 +69,58 @@ class _NoteListPageState extends State<NoteListPage> {
     );
 
     if (result != null && result.title.isNotEmpty) {
-      setState(() { });
+      setState(() {});
     }
   }
 
   Widget _buildNoteList(List<NoteItem> notes) {
-    if(notes.isEmpty){
-      return Center(
-          child: Text('No Data')
-      );
+    if (notes.isEmpty) {
+      return Center(child: Text('No Data'));
     }
 
-
-    return ListView.separated(
-      padding: EdgeInsets.all(8.0),
-      itemCount: notes.length,
-      itemBuilder: (context, index) {
-        return _buildRow(notes[index]);
-      },
-      separatorBuilder: (context, index) {
-        return Divider();
-      },
-    );
+    return ListView.builder(
+        padding: EdgeInsets.all(4.0),
+        itemCount: notes.length,
+        itemBuilder: (context, index) {
+          return _buildRow(notes[index]);
+        });
   }
 
   Widget _buildRow(NoteItem note) {
-    return ListTile(
-      key: ValueKey(note.id),
-      title: Text(note.title),
-      subtitle: Text(note.content),
-      trailing: Text(
+    return Card(
+      child: ListTile(
+        tileColor: new Color(note.colorValue == null ? 0 : note.colorValue),
+        key: ValueKey(note.id),
+        title: Text(note.title),
+        subtitle: Text(note.content),
+        trailing: Text(
           StringHelper.formatDate(note.modifiedDate, 'dd MMM yyyy'),
           style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        ),
+        onTap: () async {
+          final NoteItem result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => UpdateNotePage(noteId: note.id)),
+          );
+          setState(() {});
+        },
       ),
-      onTap: () async {
-        final NoteItem result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => UpdateNotePage(noteId: note.id)),
-        );
-        setState(() { });
-      },
     );
   }
 
-  Widget _buildDrawer(BuildContext context){
+  Widget _buildDrawer(BuildContext context) {
     return CustomDrawer(
-      context: context,
+        context: context,
         selectedIndex: 0,
         onTapNotes: () {
           Navigator.pop(context);
         },
-      onTapTrash: () async {
-        Navigator.pop(context); // close the drawer
-        _navigateToTrashPage(context);
-      }
-    );
+        onTapTrash: () async {
+          Navigator.pop(context); // close the drawer
+          _navigateToTrashPage(context);
+        });
   }
-
 
   _navigateToTrashPage(BuildContext context) async {
     final NoteItem result = await Navigator.push(

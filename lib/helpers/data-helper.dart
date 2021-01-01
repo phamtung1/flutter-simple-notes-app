@@ -2,7 +2,7 @@ import 'package:simple_notes_app/models/note-item.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-const DatabaseName = "simple_note_app_demo13.db";
+const DatabaseName = "simple_note_app_demo15.db";
 const TableName = "notes";
 
 class DataHelper {
@@ -58,7 +58,7 @@ class DataHelper {
 
   static Future<void> update(NoteItem note) async {
     final db = await _openDb();
-    note.modifiedDate = new DateTime.now().millisecondsSinceEpoch;
+
     await db.update(
       TableName,
       note.toMap(),
@@ -83,7 +83,7 @@ class DataHelper {
       join(await getDatabasesPath(), DatabaseName),
       onCreate: (db, version) async {
         db.execute(
-          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT NOT NULL, content TEXT, deleted INTEGER, modifiedDate INTEGER)",
+          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT NOT NULL, content TEXT, deleted INTEGER, modifiedDate INTEGER, colorValue INTEGER)",
         );
         await db.insert(
             TableName,

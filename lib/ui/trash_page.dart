@@ -39,29 +39,30 @@ class _TrashPageState extends State<TrashPage> {
         });
   }
 
-  List<Widget> _buildActionButtons(List<NoteItem> notes){
-    if(notes.isEmpty){
+  List<Widget> _buildActionButtons(List<NoteItem> notes) {
+    if (notes.isEmpty) {
       return null;
     }
 
     return [
       FlatButton(
-      textColor: Colors.white,
-      onPressed: () {
-        UIHelper.showConfirm(
-          context: context,
-          title: 'Empty Trash',
-          message: 'Are you sure you want to permanently delete all notes in the trash?',
-          onOKPressed:  () async {
-            await DataHelper.emptyTrash();
-            Navigator.pop(context); // dismiss dialog
-            setState(() { });
-          },
-        );
-      },
-      child: Text("Empty Trash"),
-      shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
-    )
+        textColor: Colors.white,
+        onPressed: () {
+          UIHelper.showConfirm(
+            context: context,
+            title: 'Empty Trash',
+            message:
+                'Are you sure you want to permanently delete all notes in the trash?',
+            onOKPressed: () async {
+              await DataHelper.emptyTrash();
+              Navigator.pop(context); // dismiss dialog
+              setState(() {});
+            },
+          );
+        },
+        child: Text("Empty Trash"),
+        shape: CircleBorder(side: BorderSide(color: Colors.transparent)),
+      )
     ];
   }
 
@@ -83,50 +84,47 @@ class _TrashPageState extends State<TrashPage> {
   }
 
   Widget _buildNoteList(List<NoteItem> notes) {
-    if(notes.isEmpty){
-      return Center(
-        child: Text('Trash is empty')
-      );
+    if (notes.isEmpty) {
+      return Center(child: Text('Trash is empty'));
     }
 
-    return ListView.separated(
-      padding: EdgeInsets.all(8.0),
-      itemCount: notes.length,
-      itemBuilder: (context, index) {
-        return _buildRow(context, notes[index]);
-      },
-      separatorBuilder: (context, index) {
-        return Divider();
-      },
-    );
+    return ListView.builder(
+        padding: EdgeInsets.all(8.0),
+        itemCount: notes.length,
+        itemBuilder: (context, index) {
+          return _buildRow(context, notes[index]);
+        });
   }
 
   Widget _buildRow(BuildContext context, NoteItem note) {
-    return ListTile(
-      key: ValueKey(note.id),
-      title: Text(note.title),
-      subtitle: Text(note.content),
-      trailing: Text(
-        StringHelper.formatDate(note.modifiedDate, 'dd MMM yyyy'),
-        style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
-      ),
-      onTap: () async {
-        final NoteItem result = await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => NoteDetailPage(noteId: note.id)),
-        );
-        if (result != null && result.deleted != 1){
-          final snackBar = SnackBar(content: Text('Note has been restored!'));
-          Scaffold.of(context).showSnackBar(snackBar);
-        }
+    return Card(
+      child: ListTile(
+        tileColor: new Color(note.colorValue == null ? 0 : note.colorValue),
+        key: ValueKey(note.id),
+        title: Text(note.title),
+        subtitle: Text(note.content),
+        trailing: Text(
+          StringHelper.formatDate(note.modifiedDate, 'dd MMM yyyy'),
+          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+        ),
+        onTap: () async {
+          final NoteItem result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => NoteDetailPage(noteId: note.id)),
+          );
+          if (result != null && result.deleted != 1) {
+            final snackBar = SnackBar(content: Text('Note has been restored!'));
+            Scaffold.of(context).showSnackBar(snackBar);
+          }
 
-        setState(() { });
-      },
+          setState(() {});
+        },
+      ),
     );
   }
 
-  Widget _buildDrawer(BuildContext context){
+  Widget _buildDrawer(BuildContext context) {
     return CustomDrawer(
         context: context,
         selectedIndex: 1,
@@ -136,7 +134,6 @@ class _TrashPageState extends State<TrashPage> {
         },
         onTapTrash: () async {
           Navigator.pop(context);
-        }
-    );
+        });
   }
 }

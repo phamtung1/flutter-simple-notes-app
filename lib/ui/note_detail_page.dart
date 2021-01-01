@@ -42,7 +42,7 @@ class NoteDetailPageState extends State<NoteDetailPage> {
   Widget build(BuildContext context) {
     return  Scaffold(
         appBar: AppBar(
-          title: Text('Note Details'),
+          title: Text('Note Details (Trash)'),
           actions: [
             IconButton(
                 icon: Icon(Icons.restore),
@@ -59,7 +59,7 @@ class NoteDetailPageState extends State<NoteDetailPage> {
                     onOKPressed:  () async {
                       await DataHelper.delete(_note.id);
                       Navigator.pop(context); // dismiss dialog
-                      Navigator.pop(context, _note); // back to previous page
+                      Navigator.pop(context); // back to previous page
                     },
                   );
                 }),
@@ -82,6 +82,7 @@ class NoteDetailPageState extends State<NoteDetailPage> {
       titleController: _titleInputController,
       contentController: _contentInputController,
       readOnly: true,
+      noteColor: new Color(_note.colorValue == null ? 0 : _note.colorValue),
     );
   }
 

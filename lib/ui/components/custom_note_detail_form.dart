@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:simple_notes_app/helpers/string-helper.dart';
 
 class CustomNoteDetailForm extends Form {
   CustomNoteDetailForm(
       {GlobalKey<FormState> key,
       TextEditingController titleController,
       TextEditingController contentController,
-      bool readOnly = false})
+        Color noteColor,
+      bool readOnly = false,
+      })
       : super(
             key: key,
             child: Padding(
@@ -16,10 +19,11 @@ class CustomNoteDetailForm extends Form {
                   TextFormField(
                     readOnly: readOnly,
                     controller: titleController,
+                    style: TextStyle(fontSize: 22),
                     decoration: InputDecoration(
-                      labelText: "Title",
-                      border: const OutlineInputBorder(),
-                      filled: readOnly
+                      hintText: "Title",
+                      filled: noteColor != null,
+                      fillColor: noteColor
                     ),
                     validator: (value) {
                       if (value.isEmpty) {
@@ -34,9 +38,7 @@ class CustomNoteDetailForm extends Form {
                         readOnly: readOnly,
                         controller: contentController,
                         decoration: InputDecoration(
-                          hintText: "Note",
-                          border: const OutlineInputBorder(),
-                          filled: readOnly
+                          hintText: "Note"
                         ),
                         maxLines: 30,
                         keyboardType: TextInputType.multiline),
