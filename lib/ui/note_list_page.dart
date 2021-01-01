@@ -3,18 +3,22 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:simple_notes_app/helpers/string-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
+import 'package:simple_notes_app/ui/my_search_delegate.dart';
 import 'package:simple_notes_app/ui/trash_page.dart';
 import 'package:simple_notes_app/ui/update_note_page.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 import 'add_note_page.dart';
 import 'components/custom_drawer.dart';
+import 'components/my_note_list_tile.dart';
 
 class NoteListPage extends StatefulWidget {
-  @override
+   @override
   _NoteListPageState createState() => _NoteListPageState();
 }
 
 class _NoteListPageState extends State<NoteListPage> {
+  final MySearchDelegate _searchDelegate = MySearchDelegate();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<NoteItem>>(
@@ -25,6 +29,15 @@ class _NoteListPageState extends State<NoteListPage> {
               appBar: AppBar(
                 title: Text('Simple Notes App'),
                 actions: [
+                  IconButton(
+                    icon: Icon(Icons.search),
+                    onPressed: () async {
+                      final String selected = await showSearch<String>(
+                        context: context,
+                        delegate: _searchDelegate,
+                      );
+                    },
+                  ),
                   IconButton(
                       icon: Icon(Icons.note_add),
                       onPressed: () {
@@ -82,31 +95,18 @@ class _NoteListPageState extends State<NoteListPage> {
         padding: EdgeInsets.all(4.0),
         itemCount: notes.length,
         itemBuilder: (context, index) {
-          return _buildRow(notes[index]);
-        });
-  }
-
-  Widget _buildRow(NoteItem note) {
-    return Card(
-      child: ListTile(
-        tileColor: new Color(note.colorValue == null ? 0 : note.colorValue),
-        key: ValueKey(note.id),
-        title: Text(note.title),
-        subtitle: Text(note.content),
-        trailing: Text(
-          StringHelper.formatDate(note.modifiedDate, 'dd MMM yyyy'),
-          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
-        ),
-        onTap: () async {
-          final NoteItem result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => UpdateNotePage(noteId: note.id)),
+          return MyNoteListTile(
+            note: notes[index],
+            onTap: () async {
+              final NoteItem result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => UpdateNotePage(noteId: notes[index].id)),
+              );
+              setState(() {});
+            },
           );
-          setState(() {});
-        },
-      ),
-    );
+        });
   }
 
   Widget _buildDrawer(BuildContext context) {

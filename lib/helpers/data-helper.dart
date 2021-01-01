@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -25,6 +26,20 @@ class DataHelper {
     Map<String,dynamic> data = maps.length > 0 ? maps[0] : null;
     NoteItem note = NoteItem.fromMap(data);
     return Future.value(note);
+  }
+
+  static Future<List<NoteItem>> search(String query) async {
+    final Database db = await _openDb();
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      TableName,
+      where:  "(deleted is null or deleted = 0) AND title LIKE ?",
+      whereArgs: ['%$query%']
+    );
+
+    return List.generate(maps.length, (i) {
+      return NoteItem.fromMapTruncatedContent(maps[i]);
+    });
   }
 
   static Future<List<NoteItem>> getAllWithTruncatedContent() async {
