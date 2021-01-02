@@ -8,4 +8,4 @@ A basic example of note-taking app using Sqlite for storing data.
 * Search
 * Offline storage
 
-<img src="https://raw.githubusercontent.com/phamtung1/flutter-simple-notes-app/master/screenshots/main_v1.JPEG" /> <img src="https://raw.githubusercontent.com/phamtung1/flutter-simple-notes-app/master/screenshots/update_v1.JPEG" />
+<img src="https://raw.githubusercontent.com/phamtung1/flutter-simple-notes-app/master/screenshots/main_v2.png" />

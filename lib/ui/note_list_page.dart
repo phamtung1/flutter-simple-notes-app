@@ -11,7 +11,7 @@ import 'components/my_drawer.dart';
 import 'components/my_note_list_tile.dart';
 
 class NoteListPage extends StatefulWidget {
-   @override
+  @override
   _NoteListPageState createState() => _NoteListPageState();
 }
 
@@ -31,21 +31,22 @@ class _NoteListPageState extends State<NoteListPage> {
                   IconButton(
                     icon: Icon(Icons.search),
                     onPressed: () async {
-                      final String selected = await showSearch<String>(
+                      await showSearch<String>(
                         context: context,
                         delegate: _searchDelegate,
                       );
                     },
                   ),
-                  IconButton(
-                      icon: Icon(Icons.note_add),
-                      onPressed: () {
-                        _navigateToAddNotePage(context);
-                      }),
                 ],
               ),
               body: _buildNoteList(snapshot.data),
               drawer: _buildDrawer(context),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  _navigateToAddNotePage(context);
+                },
+                child: Icon(Icons.add),
+              ),
             );
           } else {
             return Scaffold(
@@ -100,7 +101,8 @@ class _NoteListPageState extends State<NoteListPage> {
               final NoteItem result = await Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => UpdateNotePage(noteId: notes[index].id)),
+                    builder: (context) =>
+                        UpdateNotePage(noteId: notes[index].id)),
               );
               setState(() {});
             },
