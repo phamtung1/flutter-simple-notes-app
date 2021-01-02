@@ -5,7 +5,6 @@ class MyNoteDetailForm extends Form {
       {GlobalKey<FormState> key,
       TextEditingController titleController,
       TextEditingController contentController,
-        Color noteColor,
       bool readOnly = false,
       })
       : super(
@@ -21,8 +20,6 @@ class MyNoteDetailForm extends Form {
                     style: TextStyle(fontSize: 22),
                     decoration: InputDecoration(
                       hintText: "Title",
-                      filled: noteColor != null,
-                      fillColor: noteColor
                     ),
                     validator: (value) {
                       if (value.isEmpty) {

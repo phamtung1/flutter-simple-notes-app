@@ -3,7 +3,7 @@ import 'package:simple_notes_app/models/note-item.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-const DatabaseName = "simple_note_app_demo15.db";
+const DatabaseName = "simple_note_app_demo16.db";
 const TableName = "notes";
 
 class DataHelper {
@@ -98,13 +98,14 @@ class DataHelper {
       join(await getDatabasesPath(), DatabaseName),
       onCreate: (db, version) async {
         db.execute(
-          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT NOT NULL, content TEXT, deleted INTEGER, modifiedDate INTEGER, colorValue INTEGER)",
+          "CREATE TABLE $TableName(id INTEGER PRIMARY KEY, title TEXT NOT NULL, content TEXT, deleted INTEGER, modifiedDate INTEGER, colorValue INTEGER NOT NULL)",
         );
         await db.insert(
             TableName,
             NoteItem(
               title: 'Welcome to Simple Notes App',
-              content: 'I presume that you already know how to use this app'
+              content: 'I presume that you already know how to use this app',
+              colorValue: Colors.white.value
             ).toMap()
         );
       },

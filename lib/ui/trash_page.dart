@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_notes_app/helpers/string-helper.dart';
 import 'package:simple_notes_app/helpers/ui-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
+import 'package:simple_notes_app/ui/components/my_note_list_tile.dart';
 import 'package:simple_notes_app/ui/note_detail_page.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 
@@ -89,38 +90,29 @@ class _TrashPageState extends State<TrashPage> {
     }
 
     return ListView.builder(
-        padding: EdgeInsets.all(8.0),
-        itemCount: notes.length,
-        itemBuilder: (context, index) {
-          return _buildRow(context, notes[index]);
-        });
-  }
+      padding: EdgeInsets.all(8.0),
+      itemCount: notes.length,
+      itemBuilder: (context, index) {
+        var note = notes[index];
+        return MyNoteListTile(
+          key: ValueKey(note.id),
+          note: note,
+          onTap: () async {
+            final NoteItem result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => NoteDetailPage(noteId: note.id)),
+            );
+            if (result != null && result.deleted != 1) {
+              final snackBar =
+                  SnackBar(content: Text('Note has been restored!'));
+              Scaffold.of(context).showSnackBar(snackBar);
+            }
 
-  Widget _buildRow(BuildContext context, NoteItem note) {
-    return Card(
-      child: ListTile(
-        tileColor: new Color(note.colorValue == null ? 0 : note.colorValue),
-        key: ValueKey(note.id),
-        title: Text(note.title),
-        subtitle: Text(note.content),
-        trailing: Text(
-          StringHelper.formatDate(note.modifiedDate, 'dd MMM yyyy'),
-          style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
-        ),
-        onTap: () async {
-          final NoteItem result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => NoteDetailPage(noteId: note.id)),
-          );
-          if (result != null && result.deleted != 1) {
-            final snackBar = SnackBar(content: Text('Note has been restored!'));
-            Scaffold.of(context).showSnackBar(snackBar);
-          }
-
-          setState(() {});
-        },
-      ),
+            setState(() {});
+          },
+        );
+      },
     );
   }
 

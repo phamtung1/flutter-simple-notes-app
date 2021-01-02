@@ -17,7 +17,7 @@ class AddNotePageState extends State<AddNotePage> {
   final _titleInputController = TextEditingController();
   final _contentInputController = TextEditingController();
 
-  Color _currentColor;
+  Color _currentColor = Colors.white;
 
   void _onChangeColor(Color color) => setState(() => _currentColor = color);
 
@@ -46,6 +46,7 @@ class AddNotePageState extends State<AddNotePage> {
         return Future.value(false);
       },
       child: Scaffold(
+        backgroundColor: _currentColor,
         appBar: AppBar(
           title: Text('Add New Note'),
           actions: [
@@ -64,7 +65,6 @@ class AddNotePageState extends State<AddNotePage> {
           margin: EdgeInsets.all(10),
           child: SingleChildScrollView(
               child: MyNoteDetailForm(
-            noteColor: _currentColor,
             key: _formKey,
             titleController: _titleInputController,
             contentController: _contentInputController,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:simple_notes_app/helpers/string-helper.dart';
 
 class UIHelper {
   static void showColorDialog(
@@ -11,16 +12,25 @@ class UIHelper {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          
           title: Text('Select colors'),
-          content: SingleChildScrollView(
+          content: SizedBox(
+            height: 210,
             child: BlockPicker(
               availableColors: [
                 Theme.of(context).canvasColor,
-                Color(0xFFe0e0e0),
-                Colors.lightBlueAccent,
-                Colors.amberAccent,
-                Colors.greenAccent,
-                Colors.yellowAccent
+                StringHelper.getColorFromHexCode('#F2D7D5'),
+                StringHelper.getColorFromHexCode('#FADBD8'),
+                StringHelper.getColorFromHexCode('#EBDEF0'),
+                StringHelper.getColorFromHexCode('#D4E6F1'),
+                StringHelper.getColorFromHexCode('#D1F2EB'),
+                StringHelper.getColorFromHexCode('#D5F5E3'),
+                StringHelper.getColorFromHexCode('#FCF3CF'),
+                StringHelper.getColorFromHexCode('#F6DDCC'),
+
+                StringHelper.getColorFromHexCode('#F1948A'),
+                StringHelper.getColorFromHexCode('#AF7AC5'),
+                StringHelper.getColorFromHexCode('#5DADE2'),
               ],
               pickerColor: pickerColor == null ? Theme.of(context).canvasColor : pickerColor,
               onColorChanged: onColorChanged,

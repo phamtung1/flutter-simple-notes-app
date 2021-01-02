@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:simple_notes_app/helpers/string-helper.dart';
 
 class NoteItem {
@@ -15,6 +17,10 @@ class NoteItem {
       this.deleted,
       this.modifiedDate,
       this.colorValue});
+
+  Color get color {
+    return new Color(colorValue);
+  }
 
   Map<String, dynamic> toMap() {
     return {

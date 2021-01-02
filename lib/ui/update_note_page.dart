@@ -24,7 +24,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
 
   final int noteId;
 
-  Color _currentColor;
+  Color _currentColor = Colors.white;
   void _onChangeColor(Color color) => setState(() => _currentColor = color);
 
   UpdateNotePageState({this.noteId});
@@ -34,7 +34,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
     DataHelper.getSingle(noteId).then((value) => {
           setState(() {
             _note = value;
-            _currentColor = new Color(_note.colorValue == null ? 0 : _note.colorValue);
+            _currentColor = _note.color;
           })
         });
 
@@ -58,6 +58,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
         return Future.value(false);
       },
       child: Scaffold(
+        backgroundColor: _currentColor,
         appBar: AppBar(
           title: Text('Update Note'),
           actions: [
@@ -111,8 +112,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
     return MyNoteDetailForm(
       key: _formKey,
       titleController: _titleInputController,
-      contentController: _contentInputController,
-      noteColor: _currentColor,
+      contentController: _contentInputController
     );
   }
 }

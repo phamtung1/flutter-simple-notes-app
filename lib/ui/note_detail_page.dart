@@ -41,6 +41,7 @@ class NoteDetailPageState extends State<NoteDetailPage> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+        backgroundColor: _note?.color,
         appBar: AppBar(
           title: Text('Note Details (Trash)'),
           actions: [
@@ -81,8 +82,7 @@ class NoteDetailPageState extends State<NoteDetailPage> {
       key: _formKey,
       titleController: _titleInputController,
       contentController: _contentInputController,
-      readOnly: true,
-      noteColor: new Color(_note.colorValue == null ? 0 : _note.colorValue),
+      readOnly: true
     );
   }
 
