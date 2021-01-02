@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:simple_notes_app/helpers/string-helper.dart';
+import 'package:simple_notes_app/helpers/my-utils.dart';
 
 class NoteItem {
   int id;
@@ -45,7 +45,7 @@ class NoteItem {
       new NoteItem(
           id: data['id'],
           title: data['title'],
-          content: StringHelper.truncateWithEllipsis(data['content']),
+          content: MyUtils.truncateWithEllipsis(data['content']),
           deleted: data['deleted'],
           modifiedDate: data['modifiedDate'],
           colorValue: data['colorValue']);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:simple_notes_app/helpers/string-helper.dart';
+import 'package:simple_notes_app/helpers/my-utils.dart';
 
-class UIHelper {
+class DialogHelper {
   static void showColorDialog(
       {BuildContext context,
       Color pickerColor,
@@ -19,18 +19,18 @@ class UIHelper {
             child: BlockPicker(
               availableColors: [
                 Theme.of(context).canvasColor,
-                StringHelper.getColorFromHexCode('#F2D7D5'),
-                StringHelper.getColorFromHexCode('#FADBD8'),
-                StringHelper.getColorFromHexCode('#EBDEF0'),
-                StringHelper.getColorFromHexCode('#D4E6F1'),
-                StringHelper.getColorFromHexCode('#D1F2EB'),
-                StringHelper.getColorFromHexCode('#D5F5E3'),
-                StringHelper.getColorFromHexCode('#FCF3CF'),
-                StringHelper.getColorFromHexCode('#F6DDCC'),
+                MyUtils.getColorFromHexCode('#F2D7D5'),
+                MyUtils.getColorFromHexCode('#FADBD8'),
+                MyUtils.getColorFromHexCode('#EBDEF0'),
+                MyUtils.getColorFromHexCode('#D4E6F1'),
+                MyUtils.getColorFromHexCode('#D1F2EB'),
+                MyUtils.getColorFromHexCode('#D5F5E3'),
+                MyUtils.getColorFromHexCode('#FCF3CF'),
+                MyUtils.getColorFromHexCode('#F6DDCC'),
 
-                StringHelper.getColorFromHexCode('#F1948A'),
-                StringHelper.getColorFromHexCode('#AF7AC5'),
-                StringHelper.getColorFromHexCode('#5DADE2'),
+                MyUtils.getColorFromHexCode('#F1948A'),
+                MyUtils.getColorFromHexCode('#AF7AC5'),
+                MyUtils.getColorFromHexCode('#5DADE2'),
               ],
               pickerColor: pickerColor == null ? Theme.of(context).canvasColor : pickerColor,
               onColorChanged: onColorChanged,

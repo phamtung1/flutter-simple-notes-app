@@ -27,11 +27,13 @@ class MyDrawer extends Drawer {
           ),
         ),
         ListTile(
+          leading: Icon(Icons.note),
           title: Text('Notes'),
           tileColor: selectedIndex == 0 ? Colors.grey : Theme.of(context).selectedRowColor,
           onTap: onTapNotes
         ),
         ListTile(
+          leading: Icon(Icons.delete),
           title: Text('Trash'),
           tileColor: selectedIndex == 1 ? Colors.grey : Theme.of(context).canvasColor,
           onTap: onTapTrash,

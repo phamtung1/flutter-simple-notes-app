@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_notes_app/helpers/ui-helper.dart';
+import 'package:simple_notes_app/helpers/dialog-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 
@@ -53,7 +53,7 @@ class AddNotePageState extends State<AddNotePage> {
             IconButton(
               icon: Icon(Icons.color_lens),
               onPressed: () async {
-                UIHelper.showColorDialog(
+                DialogHelper.showColorDialog(
                     context: context,
                     pickerColor: _currentColor,
                     onColorChanged: _onChangeColor);

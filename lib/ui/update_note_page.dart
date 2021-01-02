@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_notes_app/helpers/ui-helper.dart';
+import 'package:simple_notes_app/helpers/dialog-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 import 'components/my_note_detail_form.dart';
@@ -65,7 +65,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
             IconButton(
               icon: Icon(Icons.color_lens),
               onPressed: () async {
-                UIHelper.showColorDialog(
+                DialogHelper.showColorDialog(
                   context: context,
                   pickerColor: _currentColor,
                   onColorChanged: _onChangeColor
@@ -75,7 +75,7 @@ class UpdateNotePageState extends State<UpdateNotePage> {
             IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  UIHelper.showConfirm(
+                  DialogHelper.showConfirm(
                       context: context,
                       title: 'Delete',
                       message: 'Are you sure you want to delete this note?',

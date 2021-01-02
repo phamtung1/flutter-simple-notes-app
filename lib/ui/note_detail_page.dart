@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_notes_app/helpers/ui-helper.dart';
+import 'package:simple_notes_app/helpers/dialog-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/helpers/data-helper.dart';
 
@@ -53,7 +53,7 @@ class NoteDetailPageState extends State<NoteDetailPage> {
             IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  UIHelper.showConfirm(
+                  DialogHelper.showConfirm(
                     context: context,
                     title: 'Delete',
                     message: 'Are you sure you want to permanently delete this note from the trash?',

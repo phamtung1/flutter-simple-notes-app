@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:simple_notes_app/helpers/string-helper.dart';
+import 'package:simple_notes_app/helpers/my-utils.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 
 class MyNoteListTile extends StatelessWidget {
@@ -21,7 +21,7 @@ class MyNoteListTile extends StatelessWidget {
         title: Text(note.title),
         subtitle: Text(note.content),
         trailing: Text(
-          StringHelper.formatDate(note.modifiedDate, 'dd MMM yyyy'),
+          MyUtils.formatDate(note.modifiedDate, 'dd MMM yyyy'),
           style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
         ),
         onTap: onTap

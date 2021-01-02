@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:simple_notes_app/helpers/string-helper.dart';
-import 'package:simple_notes_app/helpers/ui-helper.dart';
+import 'package:simple_notes_app/helpers/my-utils.dart';
+import 'package:simple_notes_app/helpers/dialog-helper.dart';
 import 'package:simple_notes_app/models/note-item.dart';
 import 'package:simple_notes_app/ui/components/my_note_list_tile.dart';
 import 'package:simple_notes_app/ui/note_detail_page.dart';
@@ -49,7 +49,7 @@ class _TrashPageState extends State<TrashPage> {
       FlatButton(
         textColor: Colors.white,
         onPressed: () {
-          UIHelper.showConfirm(
+          DialogHelper.showConfirm(
             context: context,
             title: 'Empty Trash',
             message:

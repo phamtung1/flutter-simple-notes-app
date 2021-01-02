@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class StringHelper {
+class MyUtils {
 
   static String truncateWithEllipsis(String myString, [int cutoff = 20]) {
     var result = (myString.length <= cutoff)
